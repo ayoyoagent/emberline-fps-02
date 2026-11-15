@@ -141,6 +141,10 @@ export function createHud() {
       clearTimeout(bannerTimer);
       bannerTimer = setTimeout(() => bannerEl.classList.remove('on'), ms);
     },
+    clearBanner() {
+      clearTimeout(bannerTimer);
+      bannerEl.classList.remove('on');
+    },
     setChannel(label, progress) {
       if (!label) {
         channelEl.classList.add('hidden');

@@ -38,7 +38,7 @@ function toTexture(canvas, THREE, srgb = true) {
 function brickTexture(THREE) {
   const [c, g] = makeCanvas(512);
   const rnd = mulberry32(0xB91C);
-  g.fillStyle = '#c9b8a4'; // mortar
+  g.fillStyle = '#c9b8a4';
   g.fillRect(0, 0, 512, 512);
   const bw = 64;
   const bh = 32;
@@ -51,14 +51,12 @@ function brickTexture(THREE) {
       const b = Math.floor(63 * tone);
       g.fillStyle = `rgb(${r},${gg},${b})`;
       g.fillRect(col * bw + off + 2, row * bh + 2, bw - 4, bh - 4);
-      // Per-brick speckle.
       g.fillStyle = 'rgba(0,0,0,0.08)';
       for (let s = 0; s < 6; s += 1) {
         g.fillRect(col * bw + off + 4 + rnd() * (bw - 10), row * bh + 4 + rnd() * (bh - 8), 3, 2);
       }
     }
   }
-  // Soot patches + hairline cracks.
   for (let i = 0; i < 7; i += 1) {
     const x = rnd() * 512;
     const y = rnd() * 512;
@@ -96,7 +94,6 @@ function concreteTexture(THREE) {
     g.fillStyle = `rgba(${v},${v - 4},${v - 12},${0.12 + rnd() * 0.2})`;
     g.fillRect(rnd() * 512, rnd() * 512, 1 + rnd() * 3, 1 + rnd() * 3);
   }
-  // Damp streaks running down.
   for (let i = 0; i < 9; i += 1) {
     const x = rnd() * 512;
     const w = 6 + rnd() * 18;
@@ -106,7 +103,6 @@ function concreteTexture(THREE) {
     g.fillStyle = grad;
     g.fillRect(x, 0, w, 512);
   }
-  // Formwork seams.
   g.strokeStyle = 'rgba(60,58,52,0.35)';
   g.lineWidth = 2;
   for (const y of [128, 256, 384]) {
@@ -121,13 +117,11 @@ function concreteTexture(THREE) {
 function floorTexture(THREE) {
   const [c, g] = makeCanvas(512);
   const rnd = mulberry32(0xF100);
-  // 2x2 big tiles of 1 m each (texture tile = 2 m).
   const cols = ['#b5aea0', '#ada693', '#bab3a5', '#a8a191'];
   for (let ty = 0; ty < 2; ty += 1) {
     for (let tx = 0; tx < 2; tx += 1) {
       g.fillStyle = cols[ty * 2 + tx];
       g.fillRect(tx * 256, ty * 256, 256, 256);
-      // Wear: lighter centre, darker edges.
       const grad = g.createRadialGradient(tx * 256 + 128, ty * 256 + 128, 20, tx * 256 + 128, ty * 256 + 128, 180);
       grad.addColorStop(0, 'rgba(255,255,255,0.10)');
       grad.addColorStop(1, 'rgba(0,0,0,0.12)');
@@ -144,7 +138,6 @@ function floorTexture(THREE) {
   g.moveTo(0, 256);
   g.lineTo(512, 256);
   g.stroke();
-  // Moss in the joints + oil stains.
   for (let i = 0; i < 26; i += 1) {
     const onJoint = rnd() < 0.6;
     const x = onJoint ? (rnd() < 0.5 ? 256 + (rnd() - 0.5) * 14 : rnd() * 512) : rnd() * 512;
@@ -164,7 +157,6 @@ function floorTexture(THREE) {
     g.fillStyle = grad;
     g.fillRect(x - rad, y - rad, rad * 2, rad * 2);
   }
-  // Hairline cracks.
   g.strokeStyle = 'rgba(50,48,44,0.45)';
   g.lineWidth = 1;
   for (let i = 0; i < 6; i += 1) {
@@ -185,7 +177,6 @@ function floorTexture(THREE) {
 function corrugatedTexture(THREE) {
   const [c, g] = makeCanvas(512);
   const rnd = mulberry32(0xC099);
-  // Near-white grey base so the material colour tints it.
   g.fillStyle = '#d8d8d4';
   g.fillRect(0, 0, 512, 512);
   for (let x = 0; x < 512; x += 32) {
@@ -196,7 +187,6 @@ function corrugatedTexture(THREE) {
     g.fillStyle = grad;
     g.fillRect(x, 0, 32, 512);
   }
-  // Rust streaks + dents.
   for (let i = 0; i < 26; i += 1) {
     const x = rnd() * 512;
     const y = rnd() * 300;
@@ -225,13 +215,11 @@ function woodTexture(THREE) {
   const rnd = mulberry32(0x9000);
   g.fillStyle = '#8a6f4d';
   g.fillRect(0, 0, 512, 512);
-  // Horizontal planks, 6 per tile.
   for (let p = 0; p < 6; p += 1) {
     const y0 = p * 86;
     const tone = 0.85 + rnd() * 0.3;
     g.fillStyle = `rgb(${Math.floor(138 * tone)},${Math.floor(111 * tone)},${Math.floor(77 * tone)})`;
     g.fillRect(0, y0 + 2, 512, 82);
-    // Grain lines.
     g.strokeStyle = 'rgba(60,42,24,0.35)';
     g.lineWidth = 1;
     for (let i = 0; i < 5; i += 1) {
@@ -241,7 +229,6 @@ function woodTexture(THREE) {
       for (let x = 0; x <= 512; x += 64) g.lineTo(x, gy + (rnd() - 0.5) * 8);
       g.stroke();
     }
-    // Knots.
     if (rnd() < 0.7) {
       const kx = rnd() * 512;
       const ky = y0 + 20 + rnd() * 46;
@@ -270,7 +257,6 @@ function hazardTexture(THREE) {
     g.closePath();
     g.fill();
   }
-  // Scuffs.
   const rnd = mulberry32(0x9A2);
   g.fillStyle = 'rgba(0,0,0,0.18)';
   for (let i = 0; i < 30; i += 1) g.fillRect(rnd() * 256, rnd() * 256, 4 + rnd() * 14, 2 + rnd() * 4);
@@ -280,7 +266,6 @@ function hazardTexture(THREE) {
 function signTexture(THREE, letter, arrow) {
   const [c, g] = makeCanvas(256);
   g.clearRect(0, 0, 256, 256);
-  // Amber plate, dark border.
   g.fillStyle = '#f5a623';
   g.beginPath();
   g.roundRect(8, 8, 240, 240, 18);
@@ -295,7 +280,6 @@ function signTexture(THREE, letter, arrow) {
   g.textAlign = 'center';
   g.textBaseline = 'middle';
   g.fillText(letter, 128, 108);
-  // Arrow below the letter.
   g.beginPath();
   if (arrow === 'up') {
     g.moveTo(128, 168);
@@ -327,7 +311,6 @@ function flameTexture(THREE) {
   grad.addColorStop(0.7, 'rgba(220,80,20,0.55)');
   grad.addColorStop(1, 'rgba(180,40,10,0)');
   g.fillStyle = grad;
-  // Teardrop flame shape.
   g.beginPath();
   g.moveTo(64, 6);
   g.bezierCurveTo(96, 44, 104, 78, 88, 108);
@@ -337,8 +320,6 @@ function flameTexture(THREE) {
   return toTexture(c, THREE, false);
 }
 
-// The browser caller passes its THREE namespace; Node callers pass nothing
-// and get nulls (document is undefined there anyway).
 export function createTextures(THREE) {
   if (typeof document === 'undefined' || !THREE) {
     return {

@@ -32,8 +32,6 @@ export function createMover(colliders, startX = 0, startZ = 0, startYaw = 0) {
   const probe = new THREE.Box3();
   const wish = new THREE.Vector3();
 
-  // lift keeps the feet and the crown out of the horizontal tests, so
-  // standing on the floor is not read as walking into a wall.
   function overlaps(x, y, z, height, lift) {
     probe.min.set(x - RADIUS, y + lift, z - RADIUS);
     probe.max.set(x + RADIUS, y + height - lift, z + RADIUS);
@@ -126,21 +124,17 @@ export function createMover(colliders, startX = 0, startZ = 0, startYaw = 0) {
   };
 }
 
-// Keys for a bot that wants to walk toward a world-space target point:
-// returns the synthetic key set the mover understands.
 export function keysToward(mover, targetX, targetZ, opts = {}) {
   const keys = new Set();
   const dx = targetX - mover.position.x;
   const dz = targetZ - mover.position.z;
   const dist = Math.hypot(dx, dz);
   if (dist < 0.15) return keys;
-  // Desired heading: yaw 0 faces -Z. Heading angle of the target.
   const want = Math.atan2(-dx, -dz);
   let diff = want - mover.yaw;
   while (diff > Math.PI) diff -= Math.PI * 2;
   while (diff < -Math.PI) diff += Math.PI * 2;
   if (Math.abs(diff) > 0.5) {
-    // Too far off-axis: turn in place (handled by the caller setting yaw).
     return keys;
   }
   keys.add('KeyW');

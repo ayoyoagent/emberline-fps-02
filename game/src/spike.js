@@ -26,7 +26,6 @@ export function createSpike(scene, sites) {
   const beacon = new THREE.PointLight(0xff3020, 0, 6);
   group.add(beacon);
 
-  // Site markers: a glowing ring on the ground at each plant zone.
   const markers = {};
   for (const [key, site] of Object.entries(sites)) {
     const ring = new THREE.Mesh(
@@ -52,8 +51,6 @@ export function createSpike(scene, sites) {
     get plantedSite() {
       return plantedSite;
     },
-    // The carrier's device rides on their back until planted; show it on
-    // the ground at the site once planted.
     plant(siteKey, time) {
       plantedSite = siteKey;
       plantedAt = time;

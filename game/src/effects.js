@@ -28,7 +28,6 @@ export function createEffects(scene, flameTexture) {
   const group = new THREE.Group();
   scene.add(group);
 
-  // --- Tracers: thin glowing lines, pooled ---
   const tracerMat = new THREE.LineBasicMaterial({ color: 0xffd27a, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false });
   const tracers = [];
   for (let i = 0; i < TRACER_POOL; i += 1) {
@@ -42,7 +41,6 @@ export function createEffects(scene, flameTexture) {
   }
   let tracerIdx = 0;
 
-  // --- Impact sparks: one THREE.Points cloud, pooled vertices ---
   const sparkGeo = new THREE.BufferGeometry();
   const sparkPos = new Float32Array(SPARK_POOL * 3);
   const sparkCol = new Float32Array(SPARK_POOL * 3);
@@ -61,7 +59,6 @@ export function createEffects(scene, flameTexture) {
   }
   let sparkIdx = 0;
 
-  // --- Smoke puffs: sprites, pooled ---
   const smokeTex = glowTex;
   const smokes = [];
   for (let i = 0; i < SMOKE_POOL; i += 1) {
@@ -73,7 +70,6 @@ export function createEffects(scene, flameTexture) {
   }
   let smokeIdx = 0;
 
-  // --- Explosion fireball: sprite + ring + light, one at a time ---
   const boomMat = new THREE.SpriteMaterial({ map: flameTexture || glowTex, color: 0xffa030, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
   const boom = new THREE.Sprite(boomMat);
   boom.visible = false;
@@ -89,7 +85,6 @@ export function createEffects(scene, flameTexture) {
   let boomLife = 0;
   let boomMax = 1;
 
-  // --- Barrel / brazier flames: animated sprites + flickering lights ---
   const flames = [];
   function addFire(x, y, z, scale = 1) {
     const mat = new THREE.SpriteMaterial({ map: flameTexture || glowTex, color: 0xffb340, transparent: true, opacity: 0.95, depthWrite: false, blending: THREE.AdditiveBlending });
@@ -104,7 +99,6 @@ export function createEffects(scene, flameTexture) {
     return sprite;
   }
 
-  // --- Screen shake: trauma 0..1, decays; main.js reads the offset ---
   let trauma = 0;
   const shakeOffset = { x: 0, y: 0 };
   const tmpV = new THREE.Vector3();
@@ -193,14 +187,12 @@ export function createEffects(scene, flameTexture) {
   }
 
   function update(dt, time) {
-    // Tracers fade fast.
     for (const t of tracers) {
       if (!t.line.visible) continue;
       t.life -= dt;
       if (t.life <= 0) t.line.visible = false;
       else t.line.material.opacity = Math.max(0, t.life / 0.07) * 0.9;
     }
-    // Sparks fly + fall.
     let anySpark = false;
     for (let i = 0; i < SPARK_POOL; i += 1) {
       const s = sparks[i];
@@ -225,7 +217,6 @@ export function createEffects(scene, flameTexture) {
       sparkPos[i * 3 + 2] = s.z;
     }
     if (anySpark) sparkGeo.attributes.position.needsUpdate = true;
-    // Smoke rises + grows + fades.
     for (const s of smokes) {
       if (!s.sprite.visible) continue;
       s.life += dt;
@@ -241,7 +232,6 @@ export function createEffects(scene, flameTexture) {
       s.sprite.scale.set(sc, sc, 1);
       s.sprite.material.opacity = (s.max > 1.5 ? 0.55 : 0.4) * (1 - t);
     }
-    // Explosion fireball + ring + light.
     if (boom.visible) {
       boomLife += dt;
       const t = boomLife / boomMax;
@@ -259,7 +249,6 @@ export function createEffects(scene, flameTexture) {
         boomLight.intensity = 60 * (1 - t) * (0.8 + Math.random() * 0.4);
       }
     }
-    // Barrel flames flicker.
     for (const f of flames) {
       const w = Math.sin(time * 11 + f.phase) * 0.5 + Math.sin(time * 23 + f.phase * 2) * 0.5;
       const s = f.base * (1 + w * 0.12);
@@ -267,7 +256,6 @@ export function createEffects(scene, flameTexture) {
       f.sprite.material.opacity = 0.85 + w * 0.12;
       f.light.intensity = 14 * (1 + w * 0.25);
     }
-    // Shake decay.
     trauma = Math.max(0, trauma - dt * 1.4);
     const sh = trauma * trauma;
     shakeOffset.x = sh * 0.06 * (Math.random() * 2 - 1);

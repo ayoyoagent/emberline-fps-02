@@ -48,7 +48,7 @@ const world = createWorld(scene);
 const tex = createTextures(THREE);
 const effects = createEffects(scene, tex.flame);
 for (const [fx, fy, fz] of FIRE_SPOTS) effects.addFire(fx, fy, fz, fx === -3 ? 1.3 : 1);
-const weapon = createWeaponSystem(camera);
+const weapon = createWeaponSystem(camera, tex.flame);
 const audio = createAudio();
 const hud = createHud();
 const spike = createSpike(scene, SITES);
@@ -64,8 +64,6 @@ const direction = new THREE.Vector3();
 const muzzlePos = new THREE.Vector3();
 const tmpV = new THREE.Vector3();
 
-// Player hitboxes (invisible): bots raycast against these, the player's own
-// raycast never sees them.
 const playerTorso = new THREE.Mesh(
   new THREE.BoxGeometry(0.7, 0.9, 0.45),
   new THREE.MeshBasicMaterial({ visible: false }),
@@ -144,7 +142,6 @@ function resetPositions() {
 
 function startRound() {
   resetPositions();
-  // Refill magazines from reserve at the start of each round.
   for (const id of ['pistol', 'smg', 'rifle', 'sniper']) {
     const a = weapon.ammo[id];
     const take = Math.min(WEAPONS[id].mag - a.mag, a.reserve);
@@ -202,13 +199,11 @@ function damagePlayer(dmg, fromPos, head) {
   hud.setHealth(playerHp, 100);
   hud.setArmour(playerArmour);
   audio.hurt();
-  // Damage direction: angle of the attacker relative to where we look.
   const dx = fromPos.x - body.position.x;
   const dz = fromPos.z - body.position.z;
   const worldAngle = Math.atan2(dx, dz);
   const rel = worldAngle - body.yaw;
   hud.damageFrom((rel * 180) / Math.PI);
-  // Taking damage breaks a plant/defuse channel.
   if (channelBy === 'player') {
     spike.plantChannel.break();
     spike.defuseChannel.break();
@@ -381,7 +376,6 @@ function step(dt) {
   elapsed += dt;
   const phaseBefore = match.state.phase;
 
-  // --- Player channels (hold E) ---
   const eHeld = input.state.keys.has('KeyE');
   const moving = input.state.keys.has('KeyW') || input.state.keys.has('KeyA') || input.state.keys.has('KeyS') || input.state.keys.has('KeyD');
   if (match.state.phase === 'live' && playerAlive) {
@@ -426,7 +420,6 @@ function step(dt) {
       }
     }
   }
-  // --- Bot channels ---
   if (channelBy && channelBy !== 'player') {
     const bot = channelBy;
     if (!bot.alive) {
@@ -441,7 +434,6 @@ function step(dt) {
     }
   }
 
-  // --- Match machine ---
   match.step(dt, aliveCounts(), match.state.spike === 'planted');
   if (match.state.phase !== phaseBefore) {
     if (match.state.phase === 'live') {
@@ -471,10 +463,8 @@ function step(dt) {
     }
   }
 
-  // --- Player + weapon ---
   if (playerAlive) {
     player.step(dt, input.state.keys);
-    // Footsteps.
     stepAcc += player.groundSpeed() * dt;
     if (stepAcc > 2.2) {
       stepAcc = 0;
@@ -489,12 +479,10 @@ function step(dt) {
   hud.setScope(weapon.state.aiming && weapon.state.current === 'sniper');
   hud.setCrosshairSpread(4 + weapon.spread(player.groundSpeed()) * 900);
 
-  // --- Bots (they hold at spawn during the buy phase) ---
   if (match.state.phase === 'live') {
     bots.update(dt, botContext());
   }
 
-  // --- Grenades ---
   for (let i = grenades.length - 1; i >= 0; i -= 1) {
     const g = grenades[i];
     g.fuse -= dt;
@@ -512,11 +500,9 @@ function step(dt) {
     }
   }
 
-  // --- Spike visuals + effects ---
   spike.update(dt, elapsed);
   effects.update(dt, elapsed);
 
-  // --- HUD timers ---
   if (match.state.phase === 'live') {
     hud.setTimer(match.state.spike === 'planted' ? match.state.spikeTimeLeft : match.state.timeLeft, match.state.spike === 'planted');
   } else if (match.state.phase === 'buy') {
@@ -556,7 +542,6 @@ function handlePressed(codes) {
       }
     }
   }
-  // Number keys also switch owned weapons outside buy phase.
   for (const code of codes) {
     if (match.state.phase !== 'buy') {
       const map = { Digit1: 'pistol', Digit2: 'smg', Digit3: 'rifle', Digit4: 'sniper' };
@@ -614,6 +599,7 @@ function aimAt(point) {
 function runShot(name) {
   hud.hideOverlay();
   hud.hideBuy();
+  hud.clearBanner();
   body.pitch = 0;
   body.yaw = 0;
   if (name === 'start') {
@@ -638,7 +624,6 @@ function runShot(name) {
     match.state.money = 2350;
     body.position.set(1.5, 0, 13);
     body.yaw = 0.1;
-    // Stage two Ashfall bots in mid for the firefight.
     const vex = bots.bots.find((b) => b.name === 'Vex');
     const cinder = bots.bots.find((b) => b.name === 'Cinder');
     bots.resetBot(vex, 1, 2, Math.PI);
@@ -668,8 +653,6 @@ function runShot(name) {
     match.state.money = 3100;
     body.position.set(-1, 0, 9);
     body.yaw = -0.35;
-    // Thorn stages in the open south of the mid wall so both he and the
-    // blast stay visible from the player's view.
     const thorn = bots.bots.find((b) => b.name === 'Thorn');
     bots.resetBot(thorn, 4, 3.5, Math.PI * 0.8);
     thorn.state = 'hold';
@@ -701,7 +684,6 @@ function runShot(name) {
     paintTwiceThenReady(true);
     return;
   } else {
-    // end
     resetPositions();
     match.state.phase = 'end';
     match.state.score = { ember: 3, ashfall: 2 };
@@ -774,15 +756,12 @@ function onLockChange(locked) {
   }
 }
 
-// Buy menu buttons are clickable when the pointer is free (buy phase start).
 for (const btn of document.querySelectorAll('[data-buy]')) {
   btn.addEventListener('click', () => buyItem(btn.dataset.buy));
 }
 
 syncCamera();
 startRound();
-// Dev hook (no gameplay effect): lets a probe raycast the scene to identify
-// what is on screen, e.g. window.__emberline.scene.
 window.__emberline = { scene, camera, renderer, THREE };
 if (shot) runShot(shot);
 else requestAnimationFrame(frame);

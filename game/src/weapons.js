@@ -37,7 +37,6 @@ export const WEAPONS = {
 
 export const BUY_ORDER = ['pistol', 'smg', 'rifle', 'sniper', 'grenade', 'armor'];
 
-// Damage at range, with a headshot multiplier. Pure function.
 export function damageAt(weapon, distance, head) {
   let dmg = weapon.damage;
   if (distance > weapon.falloffStart) {
@@ -86,51 +85,49 @@ function buildViewModel(id) {
   const cyl = (r, len, seg = 10) => new THREE.CylinderGeometry(r, r, len, seg);
 
   if (id === 'pistol') {
-    add(box(0.075, 0.09, 0.26), gunmetal, 0, 0, -0.05); // slide
-    add(box(0.07, 0.07, 0.14), dark, 0, -0.02, 0.1); // frame
-    add(box(0.06, 0.14, 0.09), grip, 0, -0.1, 0.09, 0.25); // grip, tilted
-    add(box(0.012, 0.02, 0.012), dark, 0, 0.055, -0.17); // front sight
-    add(box(0.05, 0.015, 0.02), dark, 0, 0.055, 0.1); // rear sight
-    add(box(0.02, 0.012, 0.05), amber, 0, 0.02, -0.1); // rail accent
+    add(box(0.075, 0.09, 0.26), gunmetal, 0, 0, -0.05);
+    add(box(0.07, 0.07, 0.14), dark, 0, -0.02, 0.1);
+    add(box(0.06, 0.14, 0.09), grip, 0, -0.1, 0.09, 0.25);
+    add(box(0.012, 0.02, 0.012), dark, 0, 0.055, -0.17);
+    add(box(0.05, 0.015, 0.02), dark, 0, 0.055, 0.1);
+    add(box(0.02, 0.012, 0.05), amber, 0, 0.02, -0.1);
     muzzle.position.set(0, 0.01, -0.2);
   } else if (id === 'smg') {
-    add(box(0.08, 0.1, 0.4), gunmetal, 0, 0, -0.08); // receiver
-    add(cyl(0.028, 0.22), dark, 0, 0.02, -0.36, Math.PI / 2, 0, 0); // suppressor
-    add(box(0.07, 0.09, 0.2), dark, 0, -0.01, -0.28); // handguard
-    add(box(0.06, 0.16, 0.08), grip, 0, -0.11, 0.02, 0.2); // grip
-    add(box(0.05, 0.18, 0.06), dark, 0, -0.12, -0.12, 0.05); // magazine
-    add(box(0.07, 0.07, 0.16), grip, 0, -0.02, 0.22); // stock
-    add(box(0.012, 0.02, 0.012), dark, 0, 0.06, -0.3); // front sight
-    add(box(0.02, 0.012, 0.16), amber, 0, 0.055, -0.08); // rail accent
+    add(box(0.08, 0.1, 0.4), gunmetal, 0, 0, -0.08);
+    add(cyl(0.028, 0.22), dark, 0, 0.02, -0.36, Math.PI / 2, 0, 0);
+    add(box(0.07, 0.09, 0.2), dark, 0, -0.01, -0.28);
+    add(box(0.06, 0.16, 0.08), grip, 0, -0.11, 0.02, 0.2);
+    add(box(0.05, 0.18, 0.06), dark, 0, -0.12, -0.12, 0.05);
+    add(box(0.07, 0.07, 0.16), grip, 0, -0.02, 0.22);
+    add(box(0.012, 0.02, 0.012), dark, 0, 0.06, -0.3);
+    add(box(0.02, 0.012, 0.16), amber, 0, 0.055, -0.08);
     muzzle.position.set(0, 0.02, -0.48);
   } else if (id === 'rifle') {
-    add(box(0.09, 0.11, 0.46), gunmetal, 0, 0, -0.06); // receiver
-    add(cyl(0.024, 0.34), dark, 0, 0.025, -0.42, Math.PI / 2, 0, 0); // barrel
-    add(box(0.08, 0.09, 0.26), dark, 0, 0, -0.3); // handguard
-    add(box(0.06, 0.15, 0.09), grip, 0, -0.11, 0.06, 0.18); // grip
-    add(box(0.05, 0.17, 0.07), dark, 0, -0.12, -0.14, 0.02); // magazine, slight tilt
-    add(box(0.075, 0.09, 0.22), grip, 0, -0.02, 0.28); // stock
-    add(box(0.012, 0.025, 0.012), dark, 0, 0.065, -0.5); // front sight post
-    add(box(0.06, 0.02, 0.03), dark, 0, 0.065, 0.12); // rear sight
-    add(box(0.02, 0.012, 0.3), amber, 0, 0.06, -0.14); // rail accent
+    add(box(0.09, 0.11, 0.46), gunmetal, 0, 0, -0.06);
+    add(cyl(0.024, 0.34), dark, 0, 0.025, -0.42, Math.PI / 2, 0, 0);
+    add(box(0.08, 0.09, 0.26), dark, 0, 0, -0.3);
+    add(box(0.06, 0.15, 0.09), grip, 0, -0.11, 0.06, 0.18);
+    add(box(0.05, 0.17, 0.07), dark, 0, -0.12, -0.14, 0.02);
+    add(box(0.075, 0.09, 0.22), grip, 0, -0.02, 0.28);
+    add(box(0.012, 0.025, 0.012), dark, 0, 0.065, -0.5);
+    add(box(0.06, 0.02, 0.03), dark, 0, 0.065, 0.12);
+    add(box(0.02, 0.012, 0.3), amber, 0, 0.06, -0.14);
     muzzle.position.set(0, 0.025, -0.6);
   } else {
-    // sniper
-    add(box(0.09, 0.11, 0.5), gunmetal, 0, 0, -0.04); // receiver
-    add(cyl(0.026, 0.5), dark, 0, 0.025, -0.5, Math.PI / 2, 0, 0); // long barrel
-    add(cyl(0.035, 0.16), dark, 0, 0.025, -0.74, Math.PI / 2, 0, 0); // muzzle brake
-    add(box(0.075, 0.09, 0.3), dark, 0, 0, -0.34); // handguard
-    add(cyl(0.032, 0.2), gunmetal, 0, 0.075, -0.08, Math.PI / 2, 0, 0); // scope tube
-    add(cyl(0.045, 0.03), dark, 0, 0.075, -0.19, Math.PI / 2, 0, 0); // scope objective
-    add(box(0.06, 0.15, 0.09), grip, 0, -0.11, 0.06, 0.18); // grip
-    add(box(0.05, 0.14, 0.06), dark, 0, -0.11, -0.12, 0.02); // magazine
-    add(box(0.075, 0.1, 0.26), grip, 0, -0.02, 0.3); // stock
-    add(box(0.02, 0.012, 0.24), amber, 0, 0.06, -0.1); // rail accent
+    add(box(0.09, 0.11, 0.5), gunmetal, 0, 0, -0.04);
+    add(cyl(0.026, 0.5), dark, 0, 0.025, -0.5, Math.PI / 2, 0, 0);
+    add(cyl(0.035, 0.16), dark, 0, 0.025, -0.74, Math.PI / 2, 0, 0);
+    add(box(0.075, 0.09, 0.3), dark, 0, 0, -0.34);
+    add(cyl(0.032, 0.2), gunmetal, 0, 0.075, -0.08, Math.PI / 2, 0, 0);
+    add(cyl(0.045, 0.03), dark, 0, 0.075, -0.19, Math.PI / 2, 0, 0);
+    add(box(0.06, 0.15, 0.09), grip, 0, -0.11, 0.06, 0.18);
+    add(box(0.05, 0.14, 0.06), dark, 0, -0.11, -0.12, 0.02);
+    add(box(0.075, 0.1, 0.26), grip, 0, -0.02, 0.3);
+    add(box(0.02, 0.012, 0.24), amber, 0, 0.06, -0.1);
     muzzle.position.set(0, 0.025, -0.83);
   }
   model.add(muzzle);
 
-  // Trigger hand at the grip + olive sleeve stub.
   const hand = buildHandMesh();
   const gripPos = id === 'pistol' ? [0, -0.1, 0.09] : [0, -0.11, 0.06];
   hand.position.set(gripPos[0] + 0.01, gripPos[1] + 0.02, gripPos[2] + 0.01);
@@ -143,7 +140,6 @@ function buildViewModel(id) {
   sleeve.position.set(gripPos[0] + 0.07, gripPos[1] - 0.1, gripPos[2] + 0.16);
   sleeve.rotation.set(0.7, 0, -0.6);
   model.add(sleeve);
-  // Support hand on the handguard for long guns (simple glove fist).
   if (id !== 'pistol') {
     const fist = new THREE.Mesh(
       new THREE.BoxGeometry(0.07, 0.08, 0.1),
@@ -161,7 +157,7 @@ function buildViewModel(id) {
 
 const RIG_POS = [0.25, -0.21, -0.52];
 
-export function createWeaponSystem(camera) {
+export function createWeaponSystem(camera, flameTexture) {
   const rig = new THREE.Group();
   rig.position.set(RIG_POS[0], RIG_POS[1], RIG_POS[2]);
   rig.scale.setScalar(0.7);
@@ -174,11 +170,11 @@ export function createWeaponSystem(camera) {
     rig.add(models[id].model);
   }
 
-  // Muzzle flash: sprite + light on the camera, reused by every weapon.
   const flashMat = new THREE.MeshBasicMaterial({
+    map: flameTexture || null,
     color: 0xffc860, transparent: true, opacity: 0.95, depthWrite: false, side: THREE.DoubleSide,
   });
-  const flash = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3), flashMat);
+  const flash = new THREE.Mesh(new THREE.PlaneGeometry(0.22, 0.22), flashMat);
   flash.visible = false;
   camera.add(flash);
   const flashLight = new THREE.PointLight(0xffb340, 0, 7);

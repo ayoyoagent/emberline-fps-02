@@ -52,7 +52,6 @@ function buildSoldier(team) {
     parent.add(m);
     return m;
   }
-  // Legs (pivot at hip for the walk cycle).
   const legL = new THREE.Group();
   legL.position.set(-0.11, 0.85, 0);
   add(jeans, 0.17, 0.8, 0.19, 0, -0.4, 0, legL);
@@ -64,19 +63,15 @@ function buildSoldier(team) {
   group.add(legL, legR);
   parts.legL = legL;
   parts.legR = legR;
-  // Torso: vest + team chest stripe + shoulder pads.
   add(vest, 0.46, 0.62, 0.26, 0, 1.16, 0);
   add(accentMat, 0.48, 0.08, 0.28, 0, 1.32, 0);
   add(accentMat, 0.14, 0.1, 0.28, -0.26, 1.44, 0);
   add(accentMat, 0.14, 0.1, 0.28, 0.26, 1.44, 0);
-  // Backpack + bedroll.
   add(new THREE.MeshStandardMaterial({ color: 0x4a4438, roughness: 0.95 }), 0.34, 0.42, 0.14, 0, 1.2, 0.2);
   add(new THREE.MeshStandardMaterial({ color: 0x5a6148, roughness: 0.95 }), 0.36, 0.12, 0.16, 0, 1.46, 0.2);
-  // Head: skin + helmet with brim.
   add(skin, 0.24, 0.24, 0.24, 0, 1.62, 0);
   add(new THREE.MeshStandardMaterial({ color: team === 'ember' ? 0x6b5a35 : 0x35565e, roughness: 0.85 }), 0.28, 0.12, 0.28, 0, 1.76, 0);
   add(new THREE.MeshStandardMaterial({ color: 0x2a2d31, roughness: 0.8 }), 0.3, 0.04, 0.34, 0, 1.7, 0.02);
-  // Arms reaching forward to the rifle.
   const armL = new THREE.Group();
   armL.position.set(-0.28, 1.42, 0);
   add(vest, 0.12, 0.5, 0.14, 0, -0.22, 0.12, armL);
@@ -88,12 +83,10 @@ function buildSoldier(team) {
   group.add(armL, armR);
   parts.armL = armL;
   parts.armR = armR;
-  // Held rifle.
   const rifle = add(gun, 0.07, 0.09, 0.62, 0, 1.28, -0.28);
   rifle.rotation.x = 0.06;
   parts.rifle = rifle;
 
-  // Hitboxes stay torso + head only.
   const torsoHit = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.7, 0.34), new THREE.MeshBasicMaterial({ visible: false }));
   torsoHit.position.set(0, 1.16, 0);
   const headHit = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), new THREE.MeshBasicMaterial({ visible: false }));
@@ -247,9 +240,8 @@ export function createBots(scene, colliders, shootables) {
     const tpos = target.kind === 'player' ? ctx.playerPos : target.ref.mover.state.position;
     const aim = new THREE.Vector3(tpos.x, tpos.y + 1.25, tpos.z);
     const dist = eye.distanceTo(aim);
-    // Aim error scales with range and target speed.
     const speed = target.kind === 'player' ? ctx.playerSpeed : target.ref.mover.groundSpeed();
-    const err = 0.02 + dist * 0.0012 + speed * 0.006;
+    const err = 0.05 + dist * 0.002 + speed * 0.008;
     aim.x += (Math.random() * 2 - 1) * err * dist * 0.5;
     aim.y += (Math.random() * 2 - 1) * err * dist * 0.4;
     aim.z += (Math.random() * 2 - 1) * err * dist * 0.5;
@@ -273,7 +265,6 @@ export function createBots(scene, colliders, shootables) {
       }
     }
     ctx.onBotShot(bot, eye, end);
-    // Recoil + sound are the caller's job via onBotShot.
   }
 
   function updateBot(bot, dt, ctx) {
@@ -281,7 +272,6 @@ export function createBots(scene, colliders, shootables) {
     const m = bot.mover.state;
     const now = ctx.time;
 
-    // --- Target scan (throttled, staggered) ---
     bot.losTimer -= dt;
     if (bot.losTimer <= 0) {
       bot.losTimer = LOS_INTERVAL;
@@ -300,7 +290,6 @@ export function createBots(scene, colliders, shootables) {
       }
     }
 
-    // --- Retreat at low HP ---
     if (bot.hp < RETREAT_HP && bot.state !== 'retreat' && bot.state !== 'plant' && bot.state !== 'defuse') {
       bot.state = 'retreat';
       const spawnNode = bot.team === 'ember' ? 'emberSpawn' : 'ashSpawn';
@@ -308,7 +297,6 @@ export function createBots(scene, colliders, shootables) {
       bot.routeIdx = Math.min(1, bot.route.length - 1);
     }
 
-    // --- State behaviour ---
     let keys = new Set();
     if (bot.state === 'spawn') {
       bot.holdTimer -= dt;
@@ -350,7 +338,6 @@ export function createBots(scene, colliders, shootables) {
       }
     } else if (bot.state === 'hold') {
       bot.holdTimer -= dt;
-      // Peek: slowly sweep yaw while holding.
       m.yaw += Math.sin(now * 0.7 + bot.index) * dt * 0.4;
       if (bot.holdTimer <= 0) {
         if (bot.carrier && bot.team === 'ember' && !ctx.spikePlanted) {
@@ -383,7 +370,6 @@ export function createBots(scene, colliders, shootables) {
             bot.burstTimer = WEAPONS[bot.weaponId].gap + 0.05;
             if (bot.burstLeft === 0) bot.burstTimer = 0.5 + Math.random() * 0.7;
           }
-          // Strafe between bursts.
           bot.strafeTimer -= dt;
           if (bot.strafeTimer <= 0) {
             bot.strafeDir *= -1;
@@ -414,17 +400,14 @@ export function createBots(scene, colliders, shootables) {
       }
     }
 
-    // --- Physics (shared mover; bots walk at BOT_SPEED via key shim) ---
     const prevSpeed = m.velocity.length();
     bot.mover.step(dt, keys);
-    // Clamp bot speed to BOT_SPEED (the mover's walk speed is the player's).
     const hSpeed = Math.hypot(m.velocity.x, m.velocity.z);
     if (hSpeed > BOT_SPEED) {
       m.velocity.x *= BOT_SPEED / hSpeed;
       m.velocity.z *= BOT_SPEED / hSpeed;
     }
 
-    // --- Visual sync + walk cycle ---
     const g = bot.visual.group;
     g.position.set(m.position.x, m.position.y, m.position.z);
     g.rotation.y = m.yaw;
@@ -443,7 +426,6 @@ export function createBots(scene, colliders, shootables) {
   }
 
   function onSpikePlanted(siteKey) {
-    // Two nearest living Ashfall bots rotate to the planted site to defuse.
     const site = SITES[siteKey];
     const ash = bots
       .filter((b) => b.team === 'ashfall' && b.alive)

@@ -36,18 +36,18 @@ export const WEAPON_PRICES = {
 
 export function createMatch() {
   const state = {
-    phase: 'buy', // buy | live | end | over
+    phase: 'buy',
     round: 1,
     timeLeft: BUY_TIME,
     score: { ember: 0, ashfall: 0 },
     money: START_MONEY,
-    losses: 0, // consecutive losses, for the loss-bonus ladder
+    losses: 0,
     roundWinner: null,
-    roundReason: null, // elimination | time | detonation | defuse
-    winner: null, // match winner once decided
-    spike: 'none', // none | planted | defused | detonated
+    roundReason: null,
+    winner: null,
+    spike: 'none',
     spikeTimeLeft: 0,
-    carrier: 'player', // who carries the spike this round
+    carrier: 'player',
   };
 
   function lossReward() {
@@ -90,8 +90,6 @@ export function createMatch() {
     return true;
   }
 
-  // dt seconds pass. alive = { ember, ashfall } headcounts; spikePlanted
-  // reports whether the spike is currently planted (timer immunity).
   function step(dt, alive, spikePlanted) {
     if (state.phase === 'buy') {
       state.timeLeft -= dt;
@@ -164,7 +162,6 @@ export function createMatch() {
   };
 }
 
-// A plant/defuse channel: hold to fill, breaks on move / damage / death.
 export function createChannel(duration) {
   let progress = 0;
   let active = false;
@@ -185,7 +182,7 @@ export function createChannel(duration) {
       progress += dt;
       if (progress >= duration) {
         active = false;
-        return true; // completed
+        return true;
       }
       return false;
     },

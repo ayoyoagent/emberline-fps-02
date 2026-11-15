@@ -26,7 +26,7 @@
   #game, #game canvas { position: fixed; inset: 0; display: block; }
   #hud { position: fixed; inset: 0; pointer-events: none; }
 
-  /* Crosshair: gap expands with spread via --gap. */
+  
   #crosshair { position: fixed; left: 50%; top: 50%; width: 22px; height: 22px; transform: translate(-50%, -50%); --gap: 4px; }
   #crosshair.hidden { display: none; }
   #crosshair i { position: absolute; background: var(--ink); opacity: .9; box-shadow: 0 0 2px rgba(0,0,0,.8); }
@@ -45,7 +45,7 @@
   #hitmarker i:nth-child(3) { top: 12px; left: 0; height: 2px; width: 8px; }
   #hitmarker i:nth-child(4) { top: 12px; right: 0; height: 2px; width: 8px; }
 
-  /* Damage direction: a red arc rotated toward the attacker. */
+  
   #damage-dir { position: fixed; left: 50%; top: 50%; width: 150px; height: 150px; transform: translate(-50%, -50%); opacity: 0; transition: opacity 150ms linear; }
   #damage-dir.on { opacity: .9; }
   #damage-dir::before {
@@ -54,14 +54,14 @@
     background: radial-gradient(ellipse at center, rgba(255,64,48,.95), rgba(255,64,48,0));
   }
 
-  /* Scope overlay for the Lance-50. */
+  
   #scope { position: fixed; inset: 0; display: none; pointer-events: none; }
   #scope.on { display: block; }
   #scope::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, transparent 31%, rgba(0,0,0,.96) 33%); }
   #scope::after { content: ''; position: absolute; left: 50%; top: 50%; width: 100%; height: 1px; background: rgba(0,0,0,.7); transform: translate(-50%, -50%); box-shadow: 0 0 0 100vmax transparent; }
   #scope .vline { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(0,0,0,.7); transform: translateX(-50%); }
 
-  /* Bottom-left: health + armour. */
+  
   #vitals { position: fixed; left: 28px; bottom: 24px; width: 240px; font-family: var(--font-readout); }
   .bar-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
   .bar-label { width: 44px; font-size: 11px; letter-spacing: .08em; color: var(--muted); text-shadow: 0 1px 2px rgba(0,0,0,.7); }
@@ -72,7 +72,7 @@
   #armour-fill { background: #7fb8c9; width: 0%; }
   .bar-num { width: 30px; text-align: right; font-size: 13px; text-shadow: 0 1px 2px rgba(0,0,0,.7); }
 
-  /* Bottom-right: ammo + weapon. */
+  
   #ammo { position: fixed; right: 32px; bottom: 24px; text-align: right; font-family: var(--font-readout); }
   #ammo .mag { display: flex; align-items: baseline; gap: 8px; justify-content: flex-end; font-size: 52px; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,.6); }
   #ammo.empty #ammo-mag { color: var(--accent); }
@@ -80,7 +80,7 @@
   #weapon-name { font-size: 13px; letter-spacing: .12em; color: var(--muted); text-shadow: 0 1px 2px rgba(0,0,0,.7); }
   #grenade-count { font-size: 13px; color: var(--muted); margin-top: 2px; text-shadow: 0 1px 2px rgba(0,0,0,.7); }
 
-  /* Top-centre: timer, score, round. */
+  
   #topbar { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; font-family: var(--font-readout); }
   #topbar .team { font-size: 22px; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
   #score-ember { color: var(--accent); }
@@ -90,7 +90,7 @@
   #round-label { font-size: 12px; letter-spacing: .1em; color: var(--muted); text-shadow: 0 1px 2px rgba(0,0,0,.7); }
   #money { position: fixed; top: 16px; right: 28px; font-family: var(--font-readout); font-size: 20px; color: #ffd27a; text-shadow: 0 1px 3px rgba(0,0,0,.7); }
 
-  /* Killfeed, top-right below money. */
+  
   #killfeed { position: fixed; top: 52px; right: 28px; text-align: right; font-size: 13px; }
   .kf-line { margin-top: 4px; padding: 2px 8px; background: rgba(0,0,0,.45); transition: opacity 800ms linear; text-shadow: 0 1px 2px rgba(0,0,0,.7); }
   .kf-line.fade { opacity: 0; }
@@ -98,20 +98,20 @@
   .kf-line.ashfall b { color: var(--teal); }
   .kf-hs { color: var(--danger); font-size: 11px; letter-spacing: .08em; }
 
-  /* Round banner, centre. */
+  
   #banner { position: fixed; left: 50%; top: 34%; transform: translate(-50%, -50%); text-align: center; opacity: 0; transition: opacity 250ms linear; }
   #banner.on { opacity: 1; }
   #banner-text { font-size: 44px; font-weight: 700; letter-spacing: .04em; text-shadow: 0 2px 8px rgba(0,0,0,.7); }
   #banner-sub { font-size: 16px; color: var(--muted); margin-top: 6px; text-shadow: 0 1px 3px rgba(0,0,0,.7); }
 
-  /* Plant/defuse channel, centre-bottom. */
+  
   #channel { position: fixed; left: 50%; bottom: 150px; transform: translateX(-50%); width: 260px; text-align: center; }
   #channel.hidden { display: none; }
   #channel-label { font-size: 13px; letter-spacing: .12em; margin-bottom: 6px; text-shadow: 0 1px 2px rgba(0,0,0,.7); }
   #channel .bar { height: 8px; }
   #channel-fill { background: var(--accent); width: 0%; }
 
-  /* Buy menu. */
+  
   #buy-menu { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 460px; background: rgba(20,24,28,.94); border: 1px solid var(--hairline); padding: 20px 24px; pointer-events: auto; }
   #buy-menu.hidden { display: none; }
   #buy-menu h2 { margin: 0 0 4px; font-size: 20px; letter-spacing: .06em; }
@@ -123,7 +123,7 @@
   #buy-menu .buy-key { font-family: var(--font-readout); color: var(--accent); margin-right: 10px; }
   #buy-menu .buy-cost { font-family: var(--font-readout); color: #ffd27a; }
 
-  /* Round transition fade. */
+  
   #fade { position: fixed; inset: 0; background: #000; opacity: 0; transition: opacity 300ms linear; pointer-events: none; }
   #fade.on { opacity: .55; }
 
