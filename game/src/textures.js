@@ -94,14 +94,16 @@ function concreteTexture(THREE) {
     g.fillStyle = `rgba(${v},${v - 4},${v - 12},${0.12 + rnd() * 0.2})`;
     g.fillRect(rnd() * 512, rnd() * 512, 1 + rnd() * 3, 1 + rnd() * 3);
   }
-  for (let i = 0; i < 9; i += 1) {
+  for (let i = 0; i < 22; i += 1) {
     const x = rnd() * 512;
-    const w = 6 + rnd() * 18;
-    const grad = g.createLinearGradient(x, 0, x, 512);
-    grad.addColorStop(0, 'rgba(70,72,66,0.25)');
+    const y = rnd() * 512;
+    const w = 4 + rnd() * 12;
+    const len = 40 + rnd() * 160;
+    const grad = g.createLinearGradient(x, y, x, y + len);
+    grad.addColorStop(0, 'rgba(70,72,66,0.2)');
     grad.addColorStop(1, 'rgba(70,72,66,0)');
     g.fillStyle = grad;
-    g.fillRect(x, 0, w, 512);
+    g.fillRect(x, y, w, len);
   }
   g.strokeStyle = 'rgba(60,58,52,0.35)';
   g.lineWidth = 2;

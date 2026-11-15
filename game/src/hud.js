@@ -70,7 +70,7 @@ export function createHud() {
       if (last.hp !== pct) {
         last.hp = pct;
         healthFill.style.width = `${pct}%`;
-        healthNum.textContent = String(Math.ceil(hp));
+        healthNum.textContent = String(Math.max(0, Math.ceil(hp)));
         healthFill.classList.toggle('low', pct < 30);
       }
     },
