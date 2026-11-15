@@ -1,3 +1,4 @@
+// This file is the entrypoint: it stages the playable game and its screenshots into the output folder, then writes the judge dossier that describes the build.
 // A working threejs-fps-01 entry (Node 22, standard library only): the game is this directory's
 // game/ folder, plain static files the browser loads as ES modules with three.js from an import
 // map, and the program hands it in. It copies game/ and screenshots/ from beside this file to
