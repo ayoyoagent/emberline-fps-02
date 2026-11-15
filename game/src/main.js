@@ -668,15 +668,18 @@ function runShot(name) {
     match.state.money = 3100;
     body.position.set(-1, 0, 9);
     body.yaw = -0.35;
+    // Thorn stages in the open south of the mid wall so both he and the
+    // blast stay visible from the player's view.
     const thorn = bots.bots.find((b) => b.name === 'Thorn');
-    bots.resetBot(thorn, 6, -2, Math.PI * 0.8);
+    bots.resetBot(thorn, 4, 3.5, Math.PI * 0.8);
     thorn.state = 'hold';
     settle(20);
-    aimAt(new THREE.Vector3(6, 1.2, -2));
-    shoot(0);
-    effects.spawnExplosion(new THREE.Vector3(7, 0.3, -4), true);
+    effects.spawnExplosion(new THREE.Vector3(3, 0.3, 5), true);
     audio.explosion();
-    settle(4);
+    settle(8);
+    aimAt(new THREE.Vector3(4, 1.2, 3.5));
+    shoot(0);
+    settle(2);
     hud.setScore(2, 2);
     hud.setRound(5, MAX_ROUNDS);
     hud.setTimer(62, false);
@@ -688,9 +691,10 @@ function runShot(name) {
     match.state.timeLeft = 88;
     match.state.round = 2;
     body.position.set(0, 0, 16);
+    weapon.rig.visible = false;
     settle(10);
-    camera.position.set(0, 30, 30);
-    camera.lookAt(0, 0, -3);
+    camera.position.set(0, 24, 26);
+    camera.lookAt(0, 0, -2);
     hud.setScore(0, 0);
     hud.setRound(2, MAX_ROUNDS);
     hud.setTimer(88, false);
@@ -777,5 +781,8 @@ for (const btn of document.querySelectorAll('[data-buy]')) {
 
 syncCamera();
 startRound();
+// Dev hook (no gameplay effect): lets a probe raycast the scene to identify
+// what is on screen, e.g. window.__emberline.scene.
+window.__emberline = { scene, camera, renderer, THREE };
 if (shot) runShot(shot);
 else requestAnimationFrame(frame);

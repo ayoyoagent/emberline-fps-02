@@ -230,8 +230,8 @@ export function buildColliders() {
   solidBox(2.5, 0.5, 4.5, 0.7, 1.0, 0.7); // mid burning barrel
   solidBox(-3, 0.35, 17.5, 1.1, 0.7, 1.1); // Ember spawn brazier
   // --- Crane (legs only collide; jib is high) ---
-  solidBox(9, 3, 12, 0.8, 6, 0.8);
-  solidBox(11, 3, 12, 0.8, 6, 0.8);
+  solidBox(11, 3, 2, 0.8, 6, 0.8);
+  solidBox(13, 3, 2, 0.8, 6, 0.8);
   // --- Catwalk along the north wall (deck + pillars) ---
   solidBox(0, 3.1, -17.6, 16, 0.25, 1.2);
   for (const px of [-8, -4, 0, 4, 8]) solidBox(px, 1.5, -17.6, 0.3, 3, 0.3);
@@ -460,17 +460,19 @@ export function createWorld(scene) {
   colliders.push(new THREE.Box3(new THREE.Vector3(-3.55, 0, 16.95), new THREE.Vector3(-2.45, 0.7, 18.05)));
 
   // Crane: two legs, a jib with a hanging container, counterweight.
-  box(0.8, 6, 0.8, 9, 3, 12, mats.steel);
-  box(0.8, 6, 0.8, 11, 3, 12, mats.steel);
-  box(1.2, 1.0, 1.2, 10, 6.2, 12, mats.dark, { collide: false });
-  const jib = box(11, 0.7, 0.7, 10.5, 6.6, 12, mats.amber, { collide: false });
+  // Sited mid-yard east (z=2) so it reads as a structure from spawn instead
+  // of clipping the frame edges.
+  box(0.8, 6, 0.8, 11, 3, 2, mats.steel);
+  box(0.8, 6, 0.8, 13, 3, 2, mats.steel);
+  box(1.2, 1.0, 1.2, 12, 6.2, 2, mats.dark, { collide: false });
+  const jib = box(11, 0.7, 0.7, 12.5, 6.6, 2, mats.amber, { collide: false });
   jib.castShadow = true;
-  box(2.2, 1.6, 1.4, 4.5, 5.9, 12, mats.dark, { collide: false });
-  const hang = box(2.4, 2.4, 2.4, 14.5, 3.6, 12, mats.teal, { collide: false });
+  box(2.2, 1.6, 1.4, 6.5, 5.9, 2, mats.dark, { collide: false });
+  const hang = box(2.4, 2.4, 2.4, 16.5, 3.6, 2, mats.teal, { collide: false });
   hang.castShadow = true;
   // Cables (thin dark boxes).
-  box(0.06, 1.8, 0.06, 13.8, 5.4, 12, mats.dark, { collide: false, shoot: false });
-  box(0.06, 1.8, 0.06, 15.2, 5.4, 12, mats.dark, { collide: false, shoot: false });
+  box(0.06, 1.8, 0.06, 15.8, 5.4, 2, mats.dark, { collide: false, shoot: false });
+  box(0.06, 1.8, 0.06, 17.2, 5.4, 2, mats.dark, { collide: false, shoot: false });
 
   // Catwalk along the north wall (deck + pillars).
   box(16, 0.25, 1.2, 0, 3.1, -17.6, mats.steel);

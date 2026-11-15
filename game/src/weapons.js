@@ -159,12 +159,12 @@ function buildViewModel(id) {
   return { model, muzzle };
 }
 
-const RIG_POS = [0.25, -0.21, -0.44];
+const RIG_POS = [0.25, -0.21, -0.52];
 
 export function createWeaponSystem(camera) {
   const rig = new THREE.Group();
   rig.position.set(RIG_POS[0], RIG_POS[1], RIG_POS[2]);
-  rig.scale.setScalar(0.8);
+  rig.scale.setScalar(0.7);
   camera.add(rig);
 
   const models = {};
